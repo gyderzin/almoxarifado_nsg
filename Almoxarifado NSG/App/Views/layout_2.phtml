@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Almoxarifado NSG</title>            
+    <link rel="icon" href="img/favico.png" sizes="192x192"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">        
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>      
+    <script src="https://kit.fontawesome.com/1841e9c55b.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="script.js"></script>            
+</head>
+<?php   
+    use MF\Model\Container;     
+    $usuarioModel = Container::getModel('usuario','users');        
+    $usuarioModel->__set('id', $_SESSION['id']);
+    $usuario = $usuarioModel->recuperarUsuario();     
+    $nomeUser = explode(' ', $usuario['0']['nome']);
+    if(isset($_SESSION['id']) && $_SESSION['id'] == '') {
+        header('Location:/?login=invalido');
+    }
+    
+    require('painel/modal.phtml');    
+    $get = null;
+    isset($_GET['excluido']) ? $get = $_GET['excluido'] : $get = $_GET['excluido'] = '';    
+
+?>
+    <script>
+        var painel = window.location        
+    </script>
+    
+<body class="bg-dark" onload="onLoad('<?= $get ?>', painel)">
+
+<div class="container h-100"> <!-- abertura container -->    
+    <div class="row mb-1 border pb-1 pt-1">  <!-- abertura row -->             
+            <div class="col-md-2 ">
+                <div class="row">
+                    <div class="col-md-12 justify-content-center text-primary text-center ">
+                        <i class="fa-solid fa-user" id="icone_user"></i>
+                    </div>
+                    <div class="col-md-12 justify-content-start text-white text-painel">
+                       <?php                           
+                            echo $nomeUser['0'] .' '. $nomeUser['1'].' ('. $usuario['0']['tipo'].')';
+                       ?>
+                    </div>
+                    <div class="col-md-12 justify-content-start text-white text-painel">
+                         <?php                             
+                            echo $usuario[0]['email'];
+                       ?>
+                    </div>
+                    <div class="col-md-12 justify-content-start text-white text-painel">
+                         <?php                             
+                            if($_SESSION['filial'] == 'pvh') {
+                                echo 'Porto-Velho (RO)';
+                            }
+                            if($_SESSION['filial'] == 'jipa') {
+                                echo 'Ji-Parana (RO)';
+                            }
+                       ?>
+                    </div>
+                </div>
+            </div>            
+
+            <div class="col-md-8 d-flex justify-content-center">                
+                    <img src="/img/logo-nsg.png" alt="">                    
+            </div>   
+
+            <div class="col-md-2">
+               <div class="row h-100">
+                    <div class="col-md-12 d-flex justify-content-center align-self-center">                  
+                   <a href="/logout" id="logout" data-toggle="tooltip" data-placement="top" title="Sair">
+                        <span class="fa-solid fa-arrow-right-from-bracket" id="ico_saida"></span>                        
+                    </a>
+                    </div>
+                </div>
+            </div>            
+                  
+    </div>  <!-- fechamento row -->    
+    
+    <?=$this->content();?>        

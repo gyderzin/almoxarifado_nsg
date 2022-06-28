@@ -1,0 +1,332 @@
+<?php 
+    use MF\Model\Container; 
+    $instaciaUser = Container::getModel('Usuario', 'users');                     
+    $instaciaUser->__set('id', $_SESSION['id']);
+    $usuario = $instaciaUser->recuperarUsuario();
+    $tipoUser = $usuario['0']['tipo'];    
+?>
+<div class="row bg-primary p-2 row_cabeçalho">  <!-- abertura row -->    
+        <div class="col-md-1">
+            <div class="d-flex justify-content-center">
+              <span data-toggle="tooltip" data-placement="top" title="Adicionar nova ferramenta">
+                  <i class="fa-solid fa-circle-plus icons_painel ico_new" data-toggle="modal" data-target="#modalAddFerramenta"></i>
+              </span>  
+            </div>
+        </div>    
+        <div class="col-md-1">
+            <div class="d-flex justify-content-center">
+            <?php 
+                    if($tipoUser == 'User') {?>
+                    <span data-toggle="tooltip" data-placement="top" title="Essa ação está restrita apenas aos Adm's.">
+                        <i class="fa-solid fa-trash-can icons_painel ico_delete_inativo"></i>
+                    </span>  
+                   <?php } 
+                    else if ($tipoUser == 'Adm') {
+                   ?>                  
+                     <span data-toggle="tooltip" data-placement="top" title="Excluir ferramenta">
+                     <i class="fa-solid fa-trash-can icons_painel ico_delete"  
+                    data-toggle="modal" data-target="#modalRemoveFerramenta" id="ico_delete_ferramenta"></i>
+                    </span>  
+                    <?php } ?>                                
+            <span class=""  data-toggle="modal" data-target="#modalConfirmRemoveFerramenta" id="confirmRemoveFerramenta"></span>
+              </span>  
+            </div>
+        </div>
+      
+        <div class="col-md-6 d-flex justify-content-center ">
+            <span class="caixa-mat"style="font-size:18px; font-style:italic;">
+                <b>Gerenciamento de Ferramentas</b>
+            </span>            
+        </div>   
+
+        <div class="col-md-4 d-flex  justify-content-center">    
+          <div class="d-flex justify-content-center">
+            <form action="pesquisarFerramenta" method="post">
+                <div class="input-group"> 
+                    <input type="text" name="pesquisa" id="pesquisa" class="form-control form-control-sm inputs" placeholder="Pesquisar ferramenta">
+                    <div class="input-group-append">
+                      <button class="btn btn-secondary btn-input btn_pesquisa" type="submit" id="button-addon2" data-toggle="tooltip" data-placement="top" title="Pesquisar">
+                        <i class="fa-solid fa-magnifying-glass ico_pesquisa"></i>
+                      </button>
+                      
+                    </div>
+                </div>
+            </form>          
+          </div>
+        </div>                                
+
+    </div>              <!-- fechamento row -->    
+
+    <div class="row bg-white"> <!-- abertura row -->    
+        
+        <div class="col-md-7 borda text-info cabeçalho">
+            Descrição
+        </div>
+
+        <div class="col-md-1 borda text-info cabeçalho" data-toggle="tooltip" data-placement="top" title="Quantidade fixa da ferramenta.">
+           QTD
+        </div>
+        <div class="col-md-1 borda text-info cabeçalho" data-toggle="tooltip" data-placement="top" title="Quantidade de ferramentas pendentes a devolução.">
+            <span id="qtd_pendente">Pendente</span>
+        </div>
+        <div class="col-md-1 borda text-info cabeçalho">            
+            <div class="d-flex justify-content-center">
+               Devolução
+            </div>
+        </div>
+        <div class="col-md-1 borda text-info cabeçalho">
+            <div class="d-flex justify-content-center">
+               Saída
+            </div>
+        </div>     
+        <div class="col-md-1 borda text-info cabeçalho">
+            <div class="d-flex justify-content-center">
+               Editar
+            </div>
+        </div>        
+    </div>  <!-- fechamento row -->        
+
+<div class="row auxiliar_scroll_painel_ferramentas" id="scroll_painel_ferramentas">
+    <div class="col-12" >
+
+<!-- inserçao dos ferramentas  -->
+<?php    
+    $ferramentasDB = $this->view->ferramenta;            
+    foreach($ferramentasDB as $ferramentas) {     
+        $ferramenta = $this->view->conexao;                                       
+        $ferr= $ferramenta->recuperarDados($ferramentas['id'], 'descriçao');        
+        $nomeFerramenta = $ferr['0']['descriçao'];
+        require('modal.phtml');        
+?>
+
+    <div class="row bg-white" id="auxiliar_scroll_painel_ferramentas"> <!-- abertura row --> 
+    <span class="d-none" id="qtd_mat_painel_ferramentas">
+        <?= count($ferramentasDB)?>
+    </span>       
+        <div class="col-md-7 borda">
+            <?= $ferramentas['descriçao'] ?>
+            <?php 
+                if ($ferramentas['funcionario'] != '') {
+                    $nomeFuncionario = explode(' ', $ferramentas['funcionario']);                    
+                    ?>
+                
+                <span class="float-right" data-toggle="tooltip" data-placement="left" title="Ferramenta do funcionário <?= $nomeFuncionario['0']?>">
+                    <i class="fa-solid fa-helmet-safety"> </i>
+                </span>
+                <?php }
+                else {
+                    if($ferramentas['qtd_pendente'] == '0') {?>
+                        <div class="float-right" data-toggle="tooltip" data-placement="left" title="Sem pendências.">
+                            <i class="fa-solid fa-check text-success ico_n_pendencias"></i>
+                        </div>
+                    <?php } 
+                    else {                          
+                        ?>
+                        <div class="float-right" data-toggle="tooltip" data-placement="left" title="<?=$ferramentas['qtd_pendente']?> ferramenta(s) pendente(s) a devolução.">
+                            <i class="fa-solid fa-circle-exclamation text-warning ico_n_pendencias"></i>
+                            
+                        </div>
+                    <?php }
+                    }                    
+                ?>                                            
+        </div>
+
+        <div class="col-md-1 borda text-center">
+           <b><?= $ferramentas['quantidade'] ?></b>
+        </div>
+        <div class="col-md-1 borda text-center">
+            <?= $ferramentas['qtd_pendente'] ?>
+        </div>
+        <?php 
+            if($ferramentas['funcionario'] == '') {
+        ?>
+        <div class="col-md-1 borda caixa_ico" data-toggle="modal" data-target="#modalMaisFerramenta<?=$ferramentas['id']?>">            
+            <div class="d-flex justify-content-center">
+                <i class="fa-regular fa-plus ico_add"></i>
+            </div>
+        </div>
+        <div class="col-md-1 borda caixa_ico_remove" data-toggle="modal" data-target="#modalRemoverFerramenta<?=$ferramentas['id']?>" >
+            <div class="d-flex justify-content-center">
+                <i class="fa-solid fa-minus ico_remove"></i>
+            </div>
+        </div>
+        <?php } 
+            else {
+        ?>
+             <div class="col-md-1 borda campo_inativo">            
+            <div class="d-flex justify-content-center" data-toggle="tooltip" data-placement="bottom" title="Essa ferramenta é fixa do funcionário <?=$nomeFuncionario['0']?>">
+                <span>*</span>
+            </div>
+        </div>
+        <div class="col-md-1 borda campo_inativo">
+            <div class="d-flex justify-content-center" data-toggle="tooltip" data-placement="bottom" title="Essa ferramenta é fixa do funcionário <?=$nomeFuncionario['0']?>">
+                <span>*</span>
+            </div>
+        </div>
+
+        <?php }?>
+        <div class="col-md-1 borda caixa_ico_change" data-toggle="modal" data-target="#modalChangeFerramenta<?=$ferramentas['id']?>" >
+            <div class="d-flex justify-content-center">
+                <i class="fa-solid fa-file-pen ico_change"></i>    
+            </div>
+        </div>        
+    </div>  <!-- fechamento row -->      
+        <?php             
+            } ?>
+</div>   
+</div> 
+
+        <!-- Tags de retorno visual para o usuario -->
+
+
+    <?php if(isset($_GET['enviado']) && $_GET['enviado'] == 'sucesso') {
+        ?>
+    <div class="alert alert-success alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        Inserido com sucesso!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+
+    <?php if(isset($_GET['enviado']) && $_GET['enviado'] == 'erro') {
+        ?>
+    <div class="alert alert-danger alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        Preencha as informaçoes para inserir um Ferramenta!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+    
+
+<?php if(isset($_GET['excluido']) && $_GET['excluido'] == 'sucesso') {
+    ?>
+    <div class="alert alert-success alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        Excluido com sucesso!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+<?php }?>
+
+<?php if(isset($_GET['excluido']) && $_GET['excluido'] == 'erro') {
+    ?>
+    <div class="alert alert-danger alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        Ferramenta não encontrada!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<?php }?>
+
+<?php if(isset($_GET['adicionado']) && $_GET['adicionado'] == 'sucesso') {
+        ?>
+    <div class="alert alert-success alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        Devolvido com sucesso!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+
+    <?php if(isset($_GET['adicionado']) && $_GET['adicionado'] == 'erro') {
+        ?>
+    <div class="alert alert-danger alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        Insira as informações para adicionar um item.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+
+    <?php if(isset($_GET['removido']) && $_GET['removido'] == 'sucesso') {
+        ?>
+    <div class="alert alert-success alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        Removido com sucesso!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+
+    <?php if(isset($_GET['removido']) && $_GET['removido'] == 'erro') {
+        ?>
+    <div class="alert alert-danger alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        A quantidade inserida não é valida!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+
+    <?php if(isset($_GET['atualizado']) && $_GET['atualizado'] == 'sucesso') {
+        ?>
+    <div class="alert alert-success alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        Atualizado com sucesso!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+
+    <?php if(isset($_GET['atualizado']) && $_GET['atualizado'] == 'erro') {
+        ?>
+    <div class="alert alert-danger alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        Insira as informações para atualizar um item.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+    <?php if(isset($_GET['atualizado']) && $_GET['atualizado'] == 'qtd_invalida') {
+        ?>
+    <div class="alert alert-danger alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        A nova quantidade <b>não pode ser menor</b> que a quantidade de ferramentas <b>pendentes a devolução</b>. 
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+
+    <?php if(isset($_GET['atualizado']) && $_GET['atualizado'] == 'açao_bloqueada') {
+        ?>
+    <div class="alert alert-danger alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        Somente ADM's podem zerar a quantidade fixa de uma ferramenta!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+
+</div>      <!-- fechamento container layout_2 -->  
+
+<div class="float-right fixed-bottom d-flex justify-conten-center nav_painel" >
+      <ul class="nav ul_painel d-flex justify-content-center ">
+      <li class="nav-item">
+        <div class="d-flex justify-content-center">
+          <a class="nav-link btn btn-block btn-outline-primary fa-solid fa-cart-flatbed btn_nav" id="ico_ferramentas" data-toggle="tooltip" data-placement="top" title="Estoque de material" onclick="painel_materiais()"></a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <div class="d-flex justify-content-center">
+          <a class="nav-link btn btn-block btn-outline-primary active fa-solid fa-screwdriver-wrench btn_nav" id="ico_ferramentas"data-toggle="tooltip" data-placement="top" title="Estoque de ferramentas"></a>
+        </div>        
+      </li>
+      <li class="nav-item">
+        <div class="d-flex justify-content-center">
+          <a class="nav-link btn btn-block btn-outline-primary fa-solid fa-helmet-safety btn_nav" data-toggle="tooltip" data-placement="top" title="Funcionários" onclick="painel_funcionarios()"></a>
+        </div>           
+      </li>
+      <li class="nav-item">
+        <div class="d-flex justify-content-center">
+          <a class="nav-link btn btn-block btn-outline-primary fa-solid fa-clock-rotate-left btn_nav" data-toggle="tooltip" data-placement="bottom" title="Histórico" onclick="painel_historico()"></a>          
+        </div>            
+      </li>
+    </ul>
+  </div>
+
+
+
+  </body>
+</html>

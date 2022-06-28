@@ -1,0 +1,386 @@
+html, body {
+     height: 100%;          
+}
+.text_seleciona_contrato {
+     font-weight: bold;
+     position: relative;
+     top: 5px;
+}
+.cx_login {
+     position: relative;
+     bottom: 50px;
+}
+#titulo_index {     
+     font-style: italic;
+     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+.link {      
+     font-size: 15px;
+}
+.link:hover {
+     text-decoration: none;     
+}
+.list-group-item {
+     padding: 5px;     
+     text-align: center;
+}
+.flex-row {
+     margin-right: 0;
+}
+.borda {
+     border: 1px solid black;     
+}
+.caixa-mat {
+     position: relative;
+     left: 90px;
+}
+
+.text-painel {
+     font-size: 14px;
+     font-style: italic;    
+}
+#ico_saida {
+     font-size: 25px;
+     transition-property: color;
+     transition-duration: 0.25s
+}
+#ico_saida:hover {
+     color: white;     
+}
+#icone_user {     
+     margin-top: 7px;
+     margin-bottom: 5px;    
+     font-size: 20px;
+}
+.ico_add {
+     text-align: center;
+     font-size: 25px;
+     transition-property: color background-color;
+     transition-duration: 0.20s
+}
+.ico_remove {     
+     margin-top: 4px;
+     transition-property: color  background-color ;
+     transition-duration: 0.20s
+}
+.caixa_ico, .caixa_ico_change, .caixa_ico_remove, .ico_new, .ico_delete {
+     transition-property: color  background-color;
+     transition-duration: 0.20s;
+}
+.caixa_ico:hover {
+     background-color:#007bff;
+     color: white;
+     cursor: pointer;
+}
+.ico_change {
+     margin-top: 4px;    
+     
+}
+.caixa_ico_change:hover {
+     background-color: #ffc107;
+     color: white;
+     cursor: pointer;
+}
+.caixa_ico_remove:hover {
+     cursor: pointer;
+     background-color: #dc3545;
+     color: white;
+}
+.icons_painel {
+     font-size: 22px;
+     margin-top: 5px;     
+}
+.ico_new:hover {
+     color: white;
+     cursor: pointer;
+}
+.ico_delete:hover {
+     color: #dc3545;
+     cursor: pointer;
+}
+.ico_delete_inativo:hover {
+     color: #dc3545;
+}
+.cabeçalho {
+     font-weight: bold;
+     text-align: center;
+     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;     
+     font-style: italic;
+}
+.form {
+     height: 30px;
+}
+.row_cabeçalho {
+     height: 45px;
+}
+.input-group>.custom-file, .input-group>.custom-select, .input-group>.form-control {
+     width: 250px;
+}
+.inputs {    
+     position: relative;
+     left: 28px;
+}
+.btn-input {
+     height: 31px;
+     position: relative;
+     left: 29px;
+}
+.nav_painel {
+     height: 8%;          
+     background: #007bff;
+     text-align: center;
+     
+}
+.ul_painel {
+     width: 100%;     
+}
+.btn_nav {
+     font-size: 33px;          
+}
+.btn_nav:hover {
+     background-color: white;
+}
+.alert_bottom {
+     margin-bottom: 50px;
+}
+.data_historico {
+     position: relative;
+     right: 7px;
+}
+.qtd_historico {
+     position: relative;
+     right: 3px;
+}
+.pesquisar:hover {
+     background-color: #343a40;     
+}
+.caixa_painel {                          
+     /* overflow-x: hidden; */
+     height: 60%;     
+}
+.caixa-mat-funcionarios {
+     position: relative;
+     left: 100px;
+     top: 2px;     
+}
+.caixa_pesquisa {
+     position: relative;
+     top: 4px;
+}
+.ico_ferramentas_func {
+     margin-top: 1px;
+     font-size: 23px;
+     text-align: center;
+     transition-property: color;
+     transition-duration: 0.25s
+}
+.ico_ferramentas_func:hover {
+     color: #007bff;
+     cursor: pointer;
+     font-size: 25px;
+     margin-top: -1px;
+}
+.nome_func {
+     font-weight: bold;
+     padding-left: 12px;
+     font-style: italic;
+}
+.div_ferramentas{
+     width: 100%;
+     position: relative;
+     left: 15px;
+}
+.table td, .table th {
+     padding: 0.35rem;
+}
+#table_seleciona_filial td th{
+     padding: 1rem;
+}
+#col_12_fer, #col_12_info, #col_12_hist {
+     padding: 0px;     
+}
+.table {
+     margin-bottom: 0px;
+}
+
+.auxiliar_ferramentas, .auxiliar_info, .auxiliar_historico {
+     width: 100%;
+}
+.bold {     
+     font-size: 20px;
+     font-style: italic;
+}
+.ico_func {
+     font-size: 20px;
+}
+.ico_user {
+     font-size: 70px;     
+     display: block;     
+     position: relative;
+     left: 7px;
+}
+.ico_user:hover {     
+     cursor: pointer;     
+}
+.ico_camera {
+     float: right;
+     position: relative;
+     right: 34px;     
+     bottom: 46px;
+     font-size: 22px;  
+}
+.ico_camera:hover {
+     cursor: pointer;
+}
+.th_perso {
+     width: 200px;
+}
+.table-perso {
+     width: 80%;
+     position: relative;
+     right: 50px;
+}
+.th_ferramentas{
+     width: 10%;     
+}
+.td_ferramentas_descriçao{
+     width: 70%;     
+}
+.td_ferramentas_qtd{
+     width: 20%;     
+}
+
+.th_historico{
+     width: 10%;          
+}
+.td_historico_descriçao{
+     width: 60%;     
+}
+.td_historico_qtd{
+     width: 10%;     
+}
+.td_historico_sd{
+     width: 10%;     
+}
+.td_historico_tipo{
+     width: 10%;            
+}
+.ico_add_func {
+     font-size: 28px;
+     margin-top: 3px;
+     transition-property: color;
+     transition-duration: 0.40s
+}
+.ico_delete_func, .ico_delete_func_inativo {
+     font-size: 28px;
+     margin-top: 3px;
+     transition-property: color;
+     transition-duration: 0.40s
+}
+.ico_add_func:hover {
+     color: white;
+     cursor: pointer;     
+}
+.ico_delete_func:hover {
+    color: #dc3545;
+    cursor: pointer;
+}
+.ico_delete_func_inativo:hover {
+     color: #dc3545;
+}
+.caixa_opcao {
+     visibility: hidden;
+     display: none;    
+}
+.caixa_opcao_transition {
+     transition-property: color;
+     transition-duration: 2s;
+     transition-delay: 0.5s;         
+}
+.caixa_ico_edit {
+     position: relative;
+     left: 80px;     
+}
+.ico_edit_user {
+     font-size: 20px;
+     margin-top: 8px;          
+     transition-property: color;
+     transition-duration: 0.25s;
+}
+.ico_edit_user:hover {
+     color: white;
+     cursor: pointer;
+}
+.ico_pesquisa {
+     position: relative;
+     bottom: 3px;  
+}
+.btn_pesquisa {
+     transition-property: color;
+     transition-duration: 0.25s;
+}
+.btn_pesquisa:hover {
+     color: #007bff; 
+}
+.caixa_ico_info_aux {
+     position: relative;
+}
+.campo_inativo {
+     background-color: lightgray;
+}
+#qtd_pendente {
+     position: relative;
+     right: 6px;
+}
+.ico_n_pendencias {
+     font-size: 19px;
+     position: relative;
+     top: 2px;
+}
+.auxiliar_scroll_painel {          
+     height: 100%;
+     overflow-x: hidden;               
+}
+.auxiliar_scroll_painel_ferramentas, .auxiliar_scroll_painel_historico {                    
+     height: 59%;
+     overflow-x: hidden;                    
+}
+
+.auxiliar_scroll_painel_funcionarios {     
+     height: 53%;
+     overflow-y: auto;   
+}
+.input_date {
+     width: 125px;
+}
+#input_data_ate {
+     position: relative;
+     right: 20px;
+}
+#input_data_de {
+     position: relative;
+     right: 15px;
+}
+.btn_date {
+     position: relative;
+     right: 25px;
+}
+.input_date_modal {
+     position: relative;
+     bottom: 6px;                 
+}
+.input_date_remov {
+     height: 35px;     
+}
+.sd {
+     font-size: 14px;
+}
+.input_dev_ferr {
+     position: relative;
+     right: 16px;
+     width: 132%;
+     border: none;
+}
+.fonte_agencia {
+     font-size: 14px;
+}

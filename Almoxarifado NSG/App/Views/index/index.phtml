@@ -1,0 +1,70 @@
+<div class="container-fluid h-100">
+  <div class="row h-100">    
+  <div class="col cx_login">
+  <div class="row h-100 justify-content-center align-items-center">
+  <div class="d-flex justify-content-center mb-5">
+    <div class="card" style="width: 36rem;">
+      <div class="card-body bg-dark  rounded">
+
+        <div class="d-flex justify-content-center">
+          <img src="/img/logo-nsg.png" />
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <h2 class="text-center text-white p-3">Login de Usuário</h2>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            
+            <form action="/autenticar" method="post" id="form_login">                          
+              
+            <div class="form-group">
+                <input type="text" name="email" value=""  class="form-control" placeholder="E-mail" id="input_email">                 
+              </div>
+
+              <div class="input-group">
+                <input type="password" name="senha" id="input_senha" class="form-control " placeholder="Senha">
+                <div class="input-group-append">
+                <button class="btn btn-secondary fa-regular fa-eye disabled" type="button" id="btn_olho" onmouseenter="passwordTextEnter('input_senha')" onmouseout="passwordTextOut('input_senha')"  data-toggle="tooltip" data-placement="top" title="Exibir a senha"></button>                
+                </div>         
+                       
+              </div>                          
+              <div class="row">               
+              <div class="form-text col-md-6">
+              <small class="invisible" id="small_login">Insira as informações para fazer login.</small>
+              <br>
+                  <?php
+                    if(isset($_GET['login']) == 'invalido') {?>                    
+                  <small class="text-danger">Login invalido!</small>
+                  <?php }?>
+                  <?php
+                    if(isset($_GET['filial']) == 'invalido') {?>                    
+                  <small class="text-danger">Faça login para selecionar uma filial.</small>
+                  <?php }?>
+              </div>
+              <div class="form-text col-md-6">
+                <div class="d-flex justify-content-end mt-1">
+                  
+                </div>
+              </div>  
+              </div>            
+              </form>  
+              <button type="submit" id="btn_login" class="mb-2 mt-3 btn btn-primary btn-block" onclick="validarLogin()">Logar</button>             
+            
+
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  </div>
+</div>
+<?php
+
+?>

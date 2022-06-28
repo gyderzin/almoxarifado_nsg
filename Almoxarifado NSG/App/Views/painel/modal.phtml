@@ -1,0 +1,873 @@
+<?php    use MF\Model\Container;   ?>
+<!--MODAIS PAINEL_Materiais -->
+
+<!-- Modal success-->
+<div class="modal fade" id="modalAddMaterial" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-primary" id="exampleModalLabel">Adicionar novo material</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="novoMaterial" method="post" id="form_novo_material">
+        <div class="modal-body">      
+            <div class="form-group">
+            <label for="novoMat" id="label_novo_mat">Material</label>
+            <input type="text" class="form-control" name="material" id="novoMat" placeholder="Descrição do material">
+            </div>
+            <div class="form-group">
+            <label for="qtdNovoMat" id="label_qtd_novo_mat">Quantidade</label>
+            <input type="number" class="form-control" name="qtd-material" id="qtdNovoMat" placeholder="Quantidade em estoque" min="1">
+            </div>
+            <small class="invisible" id="small_novo_mat">Insira as informações para adicionar um novo material!</small>
+      </div>
+      </form>
+      <div class="modal-footer" id="caixa_btn_novo_material">        
+        <button type="submit" class="btn btn-success" onclick="validarNovoMaterial()">Adicionar</button>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<!-- Modal delete  -->
+<div class="modal fade" id="modalRemoveMaterial" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger" id="exampleModalLabel">Excluir material</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="excluirMaterial" method="post" id="form_excluir_material">
+        <div class="modal-body">     
+            <div class="form-group">
+            <label for="excluirMat" id="label_excluir_mat">Material</label>
+            <input type="text" class="form-control" name="material" id="excluirMat" placeholder="Descrição do material que deseja excluir">
+            <small class="mt-2 text-muted">
+                O nome deve estar digitado da forma correpondente ao que está na descrição.
+            </small>
+            </div>    
+            <small class="invisible" id="small_excluir_material">Insira a descrição do material que deseja excluir!</small>       
+      </div>
+      </form>
+      <div class="modal-footer" id="caixa_btn_excluir_material">        
+        <button type="submit" class="btn btn-danger" onclick="validarExclusaoMaterial()">Excluir</button>
+      </div>
+    
+    </div>
+  </div>
+</div>
+
+<!-- Modal adicionar-->
+<div class="modal fade" id="modalMaisMaterial<?=$materiais['id']?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-primary" id="exampleModalLabel">
+            Adicionar ao material "<span class="text-dark bold"><?=$nomeMaterial ?></span>"
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="adicionarMaterial?id=<?=$materiais['id']?>" method="post" id="formAdicionarMaterial<?=$materiais['id']?>">
+        <div class="modal-body">      
+            <div class="row"> <!-- inicio row-->
+              <div class="col-6">
+                  <div class="form-group">
+                      <label for="qtdAdicionarMaterial<?=$materiais['id']?>" id="labelAdicionarMaterial<?=$materiais['id']?>">Quantidade</label>
+                      <input type="number" class="form-control" name="qtd-material" id="qtdAdicionarMaterial<?=$materiais['id']?>" placeholder="Quantidade a ser adicionada" min="1">
+                      <small class="text-muted">
+                          A quantidade inserida será adicionada ao valor atual.
+                      </small>
+                  </div>
+                  <div class="input-group-prepend">
+                      <label for="funcionariosAdicionarMaterial<?=$materiais['id']?>" id="labelFuncionariosAddMat<?=$materiais['id']?>">Funcionário</label>
+                  </div>            
+                  <select class="custom-select" name="funcionarios" id="funcionariosAdicionarMaterial<?=$materiais['id']?>">
+                  <option selected value='0'>Selecione o funcionário que fez a devolução do material</option>                                             
+                    <?php 
+                      $funcionarios = Container::getModel('Funcionarios');
+                      $retorno = $funcionarios->getAll();                
+                      foreach($retorno as $funcionario) {                
+                    ?>  
+                    <option value="<?= $funcionario['nome']?>"><?= $funcionario['nome']?></option>                              
+                    <?php } ?>
+                  </select>
+                </div>
+
+                <div class="col-6">
+                      <div class="form-group">
+                            <label for="agencia_add_mat<?=$materiais['id']?>" id="label_agencia_add_mat<?=$materiais['id']?>">Agência</label>
+                            <select class="custom-select" name="agencia" id="agencia_add_mat<?=$materiais['id']?>">
+                                <option value="0" selectd>Selecione de qual agência o material foi devolvido.</option>
+                                <?php 
+                                  $n1 = Container::getModel('Agencias');
+                                  $agencias = $n1->getAll();
+                                  foreach($agencias as $agencia ) {?>
+                                    <option value="<?= $agencia['nome']?>"><?= $agencia['nome']?></option>
+                                <?php } ?>
+                            </select>                            
+                        </div>
+                        <div class="input-group-prepend mt-5 d-flex justify-content-start input_date_modal">
+                            <label for="input_date_add_mat<?=$materiais['id']?>" id="label_data_add_mat<?=$materiais['id']?>">
+                              Data da devolução
+                            </label>
+                      </div>
+                      <?php  
+                             $n1 = getdate();               
+                             $mes = $n1['mon'];
+                             $dia = $n1['mday'];
+             
+                             if(strlen($n1['mon']) == 1) {
+                                 $mes = '0'.$n1['mon'];
+                             }
+                             if(strlen($n1['mday']) == 1) {
+                                 $dia = '0'.$n1['mday'];
+                             }
+             
+                             $dataHoje = $n1['year'].'-'.$mes.'-'.$dia;    
+                        ?>
+
+                      <div class="d-flex justify-content-start mb-1 input_date_modal input_date_remov">
+                        <input type="date" name="data" id="input_date_add_mat<?=$materiais['id']?>" value="<?= $dataHoje ?>">
+                      </div>
+                </div>
+            </div> <!-- final row-->
+            <small class="invisible" id="small_adicionar_material<?=$materiais['id']?>">Insira as informações para adicionar o material!</small>
+      </div>
+      </form>      
+      <div class="modal-footer" id="caixa_btn_adicionar_material<?=$materiais['id']?>">        
+        <button type="submit" class="btn btn-success" onclick="validarAddMaterial('<?=$materiais['id']?>')">Salvar</button>
+      </div>            
+    </div>
+  </div>
+</div>
+
+<!-- Modal remover-->
+<div class="modal fade " id="modalRemoverMaterial<?=$materiais['id']?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger" id="exampleModalLabel">
+            Remover do material "<span class="text-dark bold"><?=$nomeMaterial ?></span>"
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="removerMaterial?id=<?=$materiais['id']?>" method="post" id="form_remove_material<?=$materiais['id']?>">
+        <div class="modal-body">        
+          <div class="row"> <!-- inico row-->
+            <div class="col-6"> <!-- inicio col 6-->
+                <div class="form-group">
+                    <label for="qtdRemoveMat<?=$materiais['id']?>" id="label_qtd_remove_material<?=$materiais['id']?>">Quantidade</label>
+                    <input type="number" class="form-control" name="qtd-material" id="qtdRemoveMat<?=$materiais['id']?>" placeholder="Quantidade a ser removida" min="1">
+                    <small class="text-muted">
+                        A quantidade inserida será removida do valor atual.
+                    </small>
+                </div>                  
+
+                  <div class="input-group-prepend">
+                      <label for="funcionariosRemoveMat<?=$materiais['id']?>" id="label_funcinarios_remove_mat<?=$materiais['id']?>">Funcionário</label>
+                  </div>            
+                  <select class="custom-select" id="funcionariosRemoveMat<?=$materiais['id']?>" name="funcionarios">
+                  <option selected value="0">Selecione o funcionário que fez a saida do material</option>                                             
+                    <?php 
+                      $funcionarios = Container::getModel('Funcionarios');
+                      $retorno = $funcionarios->getAll();                
+                      foreach($retorno as $funcionario) {                
+                    ?>  
+                    <option value="<?= $funcionario['nome']?>"><?= $funcionario['nome']?></option>                              
+                    <?php } ?>
+                  </select>     
+            </div>  <!-- final col 6-->
+
+            <div class="col-6">   <!-- incio col 6-->
+                  <div class="input-group-prepend">
+                        <label for="agencia_remove_mat<?=$materiais['id']?>" id="label_agencia_remove_mat<?=$materiais['id']?>">
+                                Agência
+                        </label>                  
+                  </div>    
+                  <select class="custom-select" name="agencia" id="agencia_remove_mat<?=$materiais['id']?>">
+                        <option value="0" select>Selecione em qual agência o material será usado.</option>
+                        <?php 
+                          $n1 = Container::getModel('Agencias');
+                          $agencias = $n1->getAll();
+                          foreach($agencias as $agencia ) {
+                        ?>
+                            <option value="<?= $agencia['nome']?>"><?= $agencia['nome']?></option>
+                        <?php } ?>
+                  </select>                               
+                                    
+                      <div class="input-group-prepend mt-5 d-flex justify-content-start input_date_modal">
+                            <label for="" id="label_data_remov_mat<?=$materiais['id']?>">
+                              Data da saída
+                            </label>
+                      </div>
+                      <?php  
+                             $n1 = getdate();               
+                             $mes = $n1['mon'];
+                             $dia = $n1['mday'];
+             
+                             if(strlen($n1['mon']) == 1) {
+                                 $mes = '0'.$n1['mon'];
+                             }
+                             if(strlen($n1['mday']) == 1) {
+                                 $dia = '0'.$n1['mday'];
+                             }
+             
+                             $dataHoje = $n1['year'].'-'.$mes.'-'.$dia;    
+                        ?>
+
+                      <div class="d-flex justify-content-start mb-1 input_date_modal input_date_remov">
+                        <input type="date" name="data" id="input_date_remov_mat<?=$materiais['id']?>" value="<?= $dataHoje ?>">
+                      </div>
+                  
+            </div>       <!-- final col 6-->         
+          </div>  <!-- final row-->
+      </div>       
+      <small class="invisible" id="small_remove_mat<?=$materiais['id']?>">
+              Insira as informações para remover o material.
+      </small> 
+      </form>
+      <div class="modal-footer" id="caixa_btn_remove_mat<?=$materiais['id']?>">        
+        <button type="submit" class="btn btn-danger" onclick="validarSaidaMaterial('<?=$materiais['id']?>')">Salvar</button>
+      </div>
+    
+    </div>
+  </div>
+</div>
+
+<!-- Modal change-->
+<div class="modal fade" id="modalChangeMaterial<?=$materiais['id']?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-warning" id="exampleModalLabel">
+            Modificar material "<span class="text-dark bold"><?=$nomeMaterial ?></span>"
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="changeMaterial?id=<?=$materiais['id']?>" method="post" id="form_edit_mat<?=$materiais['id']?>">
+        <div class="modal-body">      
+            <div class="form-group">
+            <label for="descriçaoEditMat<?=$materiais['id']?>" id="label_descriçao_edit_mat<?=$materiais['id']?>">Nova descrição</label>
+            <input type="text" class="form-control" name="material" id="descriçaoEditMat<?=$materiais['id']?>" placeholder="Insira uma nova descrição" value="<?=$nomeMaterial?>">
+            </div>
+            <div class="form-group">
+            <label for="qtdEditMat<?=$materiais['id']?>" id="label_qtd_edit_mat<?=$materiais['id']?>">Quantidade</label>
+            <input type="number" class="form-control" name="qtd-material" id="qtdEditMat<?=$materiais['id']?>" placeholder="Nova quantidade" min="0" value="<?=$materiais['quantidade']?>">
+            <small class="text-muted">
+                A quantidade inserida substituirá a quantidade atual. 
+            </small>
+            </div>
+            <small class="invisible" id="small_edit_mat<?=$materiais['id']?>">
+                Insira as informações para editar um material.
+            </small>
+      </div>
+      </form>
+      <div class="modal-footer" id="caixa_btn_edit_mat<?=$materiais['id']?>">        
+        <button type="submit" class="btn btn-success" onclick="validarEditMat('<?=$materiais['id']?>')">Salvar</button>
+      </div>      
+    </div>
+  </div>
+</div>
+
+
+                              <!-- FINAL MODAIS PAINEL_MATERIAL-->
+
+
+<!-- MODAIS PAINEL_FERRAMENTAS -->
+<!-- Modal ADD NOVA FERRAMENTA -->
+<div class="modal fade" id="modalAddFerramenta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-primary" id="exampleModalLabel">Adicionar nova ferramenta</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="novaFerramenta" method="post" id="form_nova_ferramenta">  
+        <div class="modal-body">      
+            <div class="form-group">
+            <label for="ferramentaNova" id="labelNovaFerramenta">Ferramenta</label>
+            <input type="text" class="form-control" name="Ferramenta" id="ferramentaNova" placeholder="Nome da ferramenta">
+            </div>
+            <div class="form-group">
+            <label for="qtdNovaFerramenta" id="label_qtd_nova_ferramenta">Quantidade</label>
+            <input type="number" class="form-control" name="qtd-Ferramenta" id="qtdNovaFerramenta" placeholder="Quantidade em estoque" min="1">
+            </div> 
+            <small class="invisible" id="small_nova_ferramenta">
+                Insira as informações para adicionar uma nova ferramenta!
+            </small>    
+            <br>            
+            <span data-toggle="tooltip" data-placement="right" title="Selecionar funcionário">
+              <button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#colapse_func" aria-expanded="false" aria-controls="collapseExample">
+                  Funcionário
+              </button> 
+            </span>
+            <div class="collapse mt-2" id="colapse_func" >
+                  <div class="mt-2 collapse input-group-prepend">                      
+                  </div>                       
+                  <select class="custom-select mt-1" id="funcionarios" name="funcionario">
+                  <option selected value="">Funcionário que faz uso da ferramenta</option>                                             
+                    <?php 
+                      $funcionarios = Container::getModel('Funcionarios');
+                      $retorno = $funcionarios->getAll();                
+                      foreach($retorno as $funcionario) {                
+                    ?>  
+                    <option value="<?= $funcionario['nome']?>"><?= $funcionario['nome']?></option>                              
+                    <?php } ?>            
+                  </select>   
+                  <small class="text-muted"> 
+                        Caso a ferremanta seja de uso de algum funcionário.
+                    </small>  
+            </div>  
+      </div>
+      </form>
+      <div class="modal-footer" id="caixa_btn_nova_ferramenta">        
+        <button type="submit" class="btn btn-success" onclick="validarNovaFerramenta()">Adicionar</button>
+      </div>      
+    </div>
+  </div>
+</div>
+
+<!-- Modal remove ferramenta  -->
+<div class="modal fade" id="modalRemoveFerramenta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger" id="exampleModalLabel">Excluir ferramenta</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="excluirFerramenta" method="post" id="form_remove_ferramenta">
+        <div class="modal-body">       
+            <div class="form-group">
+            <label for="ferramentaDelete" id="label_remove_ferramenta">Ferramenta</label>
+            <input type="text" class="form-control" name="Ferramenta" id="ferramentaDelete" placeholder="Nome da ferramenta que deseja excluir">
+            <small class="mt-2 text-muted">
+                O nome deve estar digitado da forma correpondente ao que esta na descrição.
+            </small>
+            </div>      
+            <small class="invisible" id="small_delete_ferramenta">
+                Insira as informações para excluir uma ferramenta!   
+            </small>     
+      </div>
+      </form>
+      <div class="modal-footer" id="caixa_btn_remove_ferramenta">        
+        <button type="submit" class="btn btn-danger" onclick="validarExclusaoFerramenta()">Excluir</button>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmar DELETE -->
+<div class="modal fade" id="modalConfirmRemoveFerramenta" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title text-danger" id="exampleModalLabel">Confirmar exclusão</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="confirmExcluirFerramenta" method="post" id="form_confirm_delete_ferramenta">
+        <div class="modal-body">      
+            <div class="font-italic">              
+              Foi encontrado mais de um registro com a descrição <span class="text-primary">"<?=$_GET['excluido']?>"</span>.
+            </div>
+            <div class="mt-3 font-weight-bold d-flex justify-content-center">
+              Selecione qual das ferramentas que vai ser excluida.
+            </div>             
+            <div class="row mt-2">                
+                    <div class="col-1 borda cabeçalho text-primary">
+                        <div class="mt-1">
+                            *
+                        </div>
+                    </div>
+
+                     <div class="col-1 borda cabeçalho text-primary">
+                        <div class="mt-1">
+                          ID
+                        </div>
+                     </div>   
+
+                    <div class="col-8 borda cabeçalho text-primary">
+                      <div class="mt-1">
+                        Descrição
+                      </div>
+                    </div>
+
+                    <div class="col-1 borda cabeçalho text-primary">
+                        <div class="mt-1">
+                            QTD
+                        </div>
+                     </div> 
+
+                    <div class="col-1 borda cabeçalho text-primary">
+                        <div class="mt-1">
+                          <i class="fa-solid fa-helmet-safety" data-toggle="tooltip" data-placement="top" title="Funcionarios"></i>
+                        </div>
+                    </div>
+            </div>    
+            <?php 
+              $ferramentaN2 = Container::getModel('Ferramentas');
+              $ferramentas_excluidas = $ferramentaN2->recuperarFerramenta($_GET['excluido']);
+              
+              $numeroFerramentas = count($ferramentas_excluidas);
+              
+              foreach($ferramentas_excluidas as $ferramenta) {
+                $nomeFuncionario = explode(' ', $ferramenta['funcionario']);        
+                ?>                                   
+            <div class="row">                
+                    <div class="col-1 borda text-center">
+                        <div class="mt-1 auxiliar_delete_ferramenta">
+                            <input type="checkbox" class="checkbox_delete_ferramenta" name="ferramenta<?=$ferramenta['id']?>" id="checkbox<?=$ferramenta['id']?>" value="<?=$ferramenta['id']?>">
+                        </div>
+                    </div>
+
+                     <div class="col-1 borda text-center">
+                        <div class="mt-1 ">
+                          <?=$ferramenta['id']?>
+                        </div>
+                     </div>   
+
+                    <div class="col-8 borda">
+                      <div class="mt-1">
+                         <?=$ferramenta['descriçao']?>
+                      </div>
+                    </div>
+
+                    <div class="col-1 borda text-center">
+                        <div class="mt-1">
+                            <?=$ferramenta['quantidade']?>
+                        </div>
+                     </div> 
+
+                    <div class="col-1 borda text-center">
+                        <div class="mt-1">
+                        <?php 
+                          if($ferramenta['funcionario'] != '') {?>
+                            <i class="fa-solid fa-helmet-safety" data-toggle="tooltip" data-placement="right" title="Ferramenta de uso do funcionario <?=$nomeFuncionario['0']?>."></i>
+                          <?php }
+                            else {?>
+                             <i class="fa-solid fa-screwdriver-wrench" data-toggle="tooltip" data-placement="right" title="Ferramenta de uso geral."></i>
+                          <?php } ?>                                        
+                        </div>
+                    </div>
+            </div>
+            <?php }?>
+            <small id="small_confirm_delete_ferramenta" class="invisible">
+                  Selecione pelo menos uma ferramenta para ser excluida!
+            </small>          
+        </div>        
+      </form>    
+      <div class="modal-footer" id="caixa_btn_confirm_delete_ferramenta">        
+        <button type="submit" class="btn btn-danger"         
+        onclick="validarDeleteFerramenta(<?= $numeroFerramentas ?>)">Remover</button>
+      </div>      
+    </div>
+  </div>
+</div>
+
+<!-- Modal adicionar-->
+<div class="modal fade bd-example-modal-lg" id="modalMaisFerramenta<?=$ferramentas['id']?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title text-primary" id="exampleModalLabel">
+          <span class="text-dark bold"><?=$nomeFerramenta.'(s)'?></span> pendentes a devolução.
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <?php 
+         $PendenciasModel = Container::getModel('PendenciasFerramentas');         
+         $pendencias = $PendenciasModel->getFerramentaByID($ferramentas['id']);
+         $qtdPendencias = count($pendencias);
+      ?>
+      <form action="adicionarFerramenta?id=<?=$ferramentas['id']?>&qtdPendencias=<?= $qtdPendencias ?>" method="post" id="formAdicionarFerramenta<?=$ferramentas['id']?>">
+        <div class="modal-body">     
+          <?php    
+                
+            if(count($pendencias) == 0) {?>
+              <div class="lead text-dark bold" >
+                <b>Essa ferramenta não possui pendências!</b>
+              </div>
+            <?php } 
+              else {              
+            ?>
+
+          <div class="bold font-italic d-flex justify-content-center">
+            <b>Lista de <span class="text-primary"><?=$nomeFerramenta.'(s)'?></span> pendentes a devolução.</b>
+          </div>
+
+          <div class="row mt-2">
+            <div class="col-1 borda text-center cabeçalho text-info">
+                *
+            </div>
+
+            <div class="col-4 borda text-center cabeçalho text-info">
+                Funcionário
+            </div>
+
+            <div class="col-1 borda text-center cabeçalho text-info">
+                QTD
+            </div>
+
+            <div class="col-3 borda text-center cabeçalho text-info">
+              Agência 
+            </div>
+
+            <div class="col-2 borda text-center cabeçalho text-info">
+                Dia
+            </div>
+
+            <div class="col-1 borda text-center cabeçalho text-info">
+                Hora
+            </div>
+
+          </div>                    
+            
+            <?php 
+              $auxiliar = 0;
+              foreach($pendencias as $pendencia) { 
+              $auxiliar++; 
+
+            ?>
+          <div class="row">
+              <div class="col-1 borda text-center auxiliar_remove_ferrenta">                
+                  <input type="checkbox" name="pendencia<?=$pendencia['id']?>" id="checkbox<?= $pendencia['id'] ?>" value="<?= $pendencia['id'] ?>">
+              </div>
+
+              <div class="col-4 borda">
+                  <?= $pendencia['funcionario'] ?>
+              </div>
+
+              <div class="col-1 borda text-center">
+                <?= $pendencia['quantidade_pendente'] ?>
+              </div>
+
+              <div class="col-3 borda text-start">
+                <span class="fonte_agencia">
+                    <?= $pendencia['agencia'] ?>               
+                </span>
+              </div>
+
+              <?php  
+                             $n1 = getdate();               
+                             $mes = $n1['mon'];
+                             $dia = $n1['mday'];
+             
+                             if(strlen($n1['mon']) == 1) {
+                                 $mes = '0'.$n1['mon'];
+                             }
+                             if(strlen($n1['mday']) == 1) {
+                                 $dia = '0'.$n1['mday'];
+                             }
+             
+                             $dataHoje = $n1['year'].'-'.$mes.'-'.$dia;    
+                        ?>
+              <div class="col-2 borda text-center">
+                  <input type="date" name="data" id="input_dev_ferr" class="input_dev_ferr" value="<?= $dataHoje ?>">
+              </div>
+
+              <div class="col-1 borda text-center">
+                <?= $pendencia['hora'] ?>
+              </div>                           
+
+            </div>
+            <input type="text" name="agencia<?= $auxiliar?>" value="<?= $pendencia['agencia'] ?>" class="d-none">
+              <?php                       
+                  }?>
+                <small class="pt-2">
+                    <b>Selecione a(s) ferramenta(s) que deseja fazer devolução.</b>
+                </small>
+                <br>
+                <small class="invisible" id="small_add_ferramenta<?=$pendencia['id']?>">
+                    Selecione pelo menos uma ferramenta para fazer a devolução.
+                </small>
+               <?php }
+              ?>        
+        </div>          
+      </form>    
+      <?php 
+        if(count($pendencias) != 0) {?>      
+        <div class="modal-footer" id="caixa_btn_add_ferramenta<?=$pendencia['id']?>">        
+            <button type="submit" class="btn btn-success" onclick="validarAddFerramenta('<?=$pendencia['id']?>','<?= $ferramentas['id']?>', '<?= count($pendencias)?>')">Salvar</button>
+        </div>      
+      <?php } ?>
+    </div>
+  </div>
+</div>
+
+<!-- Modal remover-->
+<div class="modal fade" id="modalRemoverFerramenta<?=$ferramentas['id']?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger" id="exampleModalLabel">
+            Remover da ferramenta "<span class="text-dark bold"><?=$nomeFerramenta ?></span>"
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="removerFerramenta?id=<?=$ferramentas['id']?>" method="post" id="formRemoveFerramenta<?=$ferramentas['id']?>">
+        <div class="modal-body">       
+          <div class="row"> <!-- inicio row-->
+            <div class="col-6"> <!-- inicio col -->
+                  <div class="form-group">
+                  <label for="qtd_remove_ferramenta<?=$ferramentas['id']?>" id="label_qtd_remove_ferramenta<?=$ferramentas['id']?>">Quantidade</label>
+                  <input type="number" class="form-control" name="qtd-Ferramenta" id="qtd_remove_ferramenta<?=$ferramentas['id']?>" placeholder="Quantidade a ser removida" min="1">
+                  <small class="text-muted">
+                      A quantidade inserida será removida do valor atual.
+                  </small>
+                  </div>
+                  <div class="input-group-prepend">
+                      <label for="func_remove_ferramenta<?=$ferramentas['id']?>" id="label_func_remove_ferramenta<?=$ferramentas['id']?>">Funcionário</label>
+                  </div>            
+                  <select class="custom-select" id="func_remove_ferramenta<?=$ferramentas['id']?>" name="funcionarios">
+                  <option selected value="0">Selecione o funcionário que fez a retirada</option>                                             
+                    <?php 
+                      $funcionarios = Container::getModel('Funcionarios');
+                      $retorno = $funcionarios->getAll();                
+                      foreach($retorno as $funcionario) {                
+                    ?>  
+                    <option value="<?= $funcionario['nome']?>"><?= $funcionario['nome']?></option>                              
+                    <?php } ?>
+                  </select>
+              </div><!-- final col -->
+
+              <div class="col-6">   <!-- incio col 6-->
+                  <div class="input-group-prepend">
+                        <label for="agencia_remove_ferr<?=$ferramentas['id']?>" id="label_agencia_remove_ferr<?=$ferramentas['id']?>">
+                                Agência
+                        </label>                  
+                  </div>    
+                  <select class="custom-select" name="agencia" id="agencia_remove_ferr<?=$ferramentas['id']?>">
+                        <option value="0" select>Selecione em qual agência a ferramenta será usada.</option>
+                         <?php 
+                            $n1 = Container::getModel('Agencias');
+                            $agencias = $n1->getAll();
+                            foreach($agencias as $agencia ) {
+                          ?>
+                            <option value="<?= $agencia['nome']?>"><?= $agencia['nome']?></option>
+                        <?php } ?>
+                  </select>                               
+                                    
+                      <div class="input-group-prepend mt-5 d-flex justify-content-start input_date_modal">
+                            <label for="" id="label_data_remov_ferr<?=$ferramentas['id']?>">
+                              Data da saída
+                            </label>
+                      </div>
+                      <?php  
+                             $n1 = getdate();               
+                             $mes = $n1['mon'];
+                             $dia = $n1['mday'];
+             
+                             if(strlen($n1['mon']) == 1) {
+                                 $mes = '0'.$n1['mon'];
+                             }
+                             if(strlen($n1['mday']) == 1) {
+                                 $dia = '0'.$n1['mday'];
+                             }
+             
+                             $dataHoje = $n1['year'].'-'.$mes.'-'.$dia;    
+                        ?>
+
+                      <div class="d-flex justify-content-start mb-1 input_date_modal input_date_remov">
+                        <input type="date" name="data" id="input_date_remov_ferr<?=$ferramentas['id']?>" value="<?= $dataHoje ?>">
+                      </div>
+                  
+            </div>       <!-- final col 6-->
+
+
+            </div> <!-- final row-->
+      </div>
+      <small class="invisible" id="small_remove_ferramenta<?=$ferramentas['id']?>">
+        Preencha todos os campos para remover uma ferramenta!
+      </small>
+      </form>
+      <div class="modal-footer" id="caixa_btn_remove_ferramenta<?=$ferramentas['id']?>">        
+        <button type="submit" class="btn btn-success" onclick="validarRemoveFerramenta('<?=$ferramentas['id']?>')">Salvar</button>
+      </div>      
+    </div>
+  </div>
+</div>
+
+<!-- Modal change-->
+<div class="modal fade" id="modalChangeFerramenta<?=$ferramentas['id']?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-warning" id="exampleModalLabel">
+            Editar ferramenta "<span class="text-dark bold"><?=$nomeFerramenta?></span>"
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="changeFerramenta?id=<?=$ferramentas['id']?>" method="post" id="formEditFerramenta<?=$ferramentas['id']?>">
+        <div class="modal-body">        
+            <div class="form-group">
+            <label for="descriçao_edit_ferramenta<?=$ferramentas['id']?>" id="label_descriçao_edit_ferramenta<?=$ferramentas['id']?>">Nova descrição</label>
+            <input type="text" class="form-control" name="Ferramenta" id="descriçao_edit_ferramenta<?=$ferramentas['id']?>" placeholder="Insira uma nova descrição" value="<?=$nomeFerramenta?>">
+            </div>
+            <div class="form-group">
+            <label for="qtd_edit_ferramenta" id="label_qtd_edit_ferramenta<?=$ferramentas['id']?>">Quantidade</label>
+            <input type="number" class="form-control" name="qtd-Ferramenta" id="qtd_edit_ferramenta<?=$ferramentas['id']?>" placeholder="Nova quantidade" min="0" value="<?=$ferramentas['quantidade']?>">
+            <small class="text-muted">
+                A quantidade inserida substituirá a quantidade atual. 
+            </small>
+            </div>
+      </div>
+        <small class="invisible" id="small_edit_ferramenta<?=$ferramentas['id']?>">
+        Preencha todos os campos para editar uma ferramenta!
+        </small>
+        </form>
+      <div class="modal-footer" id="caixa_btn_edit_ferramenta<?=$ferramentas['id']?>">        
+        <button type="submit" class="btn btn-success" onclick="validarEditFerramenta('<?=$ferramentas['id']?>')">Salvar</button>
+      </div>    
+    </div>
+  </div>
+</div>
+
+                                   <!--FINAL MODAIS-FERRAMENTAS  -->
+
+
+                                   <!-- MODAL FUNCIONARIOS -->
+
+<!-- MODAL ADICIONAR FUNCIONARIO -->
+
+<div class="modal fade" id="novoFuncionario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-primary" id="exampleModalLabel">Novo Funcionário</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="novoFuncionario" method="post" id="form_add">
+        <div class="modal-body">    
+          <div class="form-group row">
+              <label for="nome" class="col-sm-2 col-form-label" id="label_nome">Nome:</label>
+              <div class="col-sm-10">
+                  <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome completo do colaborador (obrigatório)">
+              </div>
+          </div>
+
+          <div class="form-group row">
+              <label for="Funçao" class="col-sm-2 col-form-label" id="label_funcao">Funçao:</label>
+              <div class="col-sm-10">
+              <select class="custom-select my-1 mr-sm-2" id="Funçao" name="funçao">
+                <option selected>Selecione a função do funcionário (obrigatório)</option>
+                <option value="Auxiliar de eletricista">Auxiliar de eletricista</option>
+                <option value="Auxiliar de manutençao">Auxiliar de manutenção</option>                
+                <option value="Auxiliar de refrigeraçao">Auxiliar de refrigeração</option>                                             
+                <option value="Eletricista">Eletricista</option>             
+                <option value="Mecânico de Refrigeração">Mecânico de Refrigeração</option>                                 
+                <option value="Técnico em Refrigeração">Técnico em Refrigeração</option>          
+              </select>
+              </div>
+          </div>
+
+          <div class="form-group row">
+              <label for="Contrato" class="col-sm-2 col-form-label" id="label_contrato">Contrato:</label>
+              <div class="col-sm-10">
+              <select class="custom-select my-1 mr-sm-2" id="Contrato" name="contrato">
+                <option selected>Contrato no qual o funcionário trabalha (obrigatório)</option>
+                <option value="MANUTENÇAO - RO">MANUTENÇAO - RO </option>      
+                <option value="FACILITIES - RO">FACILITIES - RO </option>                          
+              </select>
+              </div>
+          </div>
+                    
+          <div class="form-group row">
+              <label for="CPTS" class="col-sm-2 col-form-label">CPTS:</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="CPTS" name="ctps" placeholder="Carteira de trabalho do funcionário.">
+              </div>
+          </div>
+
+          <div class="form-group row">
+              <label for="Telefone" class="col-sm-2 col-form-label">Telefone:</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="Telefone" name="telefone" placeholder="(**) *****-****">
+              </div>
+          </div>
+          <small class="invisible" id="campos_nao_preenchidos">Os campos grifados são obrigatórios!</small>
+          </form>
+      </div>
+      <div class="modal-footer" id="div_btn">                
+        <button type="" class="btn btn-primary" id="submit_modal" onclick="novoFuncionario()">Salvar mudanças</button>
+      </div>
+
+   
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EXCLUIR FUNCIONARIO -->
+<div class="modal fade" id="desligarFuncionario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-primary" id="exampleModalLabel">Desligar funcionário</h5>
+        <button type="button" class="close" id="fecha_modal" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="desligarFuncionario" method="post" id="form_desliga_func">
+        <div class="modal-body">     
+            <div class="form-group">
+                <label for="funcionariosDesliga" id="label_desliga_func">Qual funcionário vai ser desligado?</label>
+                <select class="custom-select my-1 mr-sm-2" id="funcionariosDesliga" onchange="desligarFuncionario()" name="funcionarios">
+                  <option selected>---Funcionário---</option>
+                      <?php 
+                        $funcionarios = Container::getModel('Funcionarios');
+                        $retorno = $funcionarios->getAll();                
+                        foreach($retorno as $funcionario) {?>  
+                      <option value="<?= $funcionario['nome']?>">
+                          <?= $funcionario['nome']?>
+                      </option>
+                  <?php } ?>
+                </select>
+                <div class="caixa_opcao" id="caixa">
+                      <div class="mt-2">
+                        Essa ação não pode ser desfeita. <b>Voce tem certeza?</b>
+                      </div>                  
+                    <div class="form-check form-check-inline mt-1" >
+                          <input class="form-check-input" type="radio" name="select" id="sim" value="SIM" onchange="change()">
+                          <label class="form-check-label" for="sim">Sim</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="select" id="nao" value="nao" onchange="change()">
+                          <label class="form-check-label" for="nao">Não</label>
+                    </div>
+                </div>
+            </div>
+            <small class="invisible"id="retorno_select_func">Selecione um funcionário!</small>
+        </form>
+        
+      </div>
+      <div class="modal-footer" id="btn_delisga_func">        
+        <button type="submit" onclick="validarFuncionario()" id="btn_submit"class="btn btn-dark invisible">Salvar mudanças</button>
+      </div>
+      
+    </div>
+  </div>
+</div>

@@ -1,0 +1,163 @@
+<div class="row bg-primary p-2 row_cabeçalho">  <!-- abertura row -->    
+        <div class="col-md-4">       
+          <form action="/filtrarDataHistorico" method="post">
+            <div class="row row_input_date">
+                <div class="col-5">
+                  <input type="date" class="input_date" name="data_historico_de" id="input_data_de" value="<?= $_SESSION['dataDe'] ?>" data-toggle="tooltip" data-placement="top" title="De">
+                </div> 
+                <div class="col-5">
+                  <input type="date" class="input_date" name="data_historico_ate" id="input_data_ate" value="<?= $_SESSION['dataAte']?>" data-toggle="tooltip" data-placement="top" title="Até">
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-sm btn-outline-light btn_date">
+                      Filtrar
+                    </button>
+                </div>
+            </div>   
+            </form>
+        </div>
+        <div class="col-md-4 d-flex justify-content-center">
+            <span class="caixa-mat-historico"style="font-size:18px; font-style:italic;">
+                <b>Histórico de entrada/saída</b>
+            </span>            
+        </div>   
+
+        <div class="col-md-4 d-flex  justify-content-center">    
+          <div class="d-flex justify-content-center">
+            <form action="pesquisarHistorico" method="post">
+                <div class="input-group"> 
+                    <input type="text" name="pesquisa" id="pesquisa" class="form-control form-control-sm inputs" placeholder="Pesquisar registro">
+                    <div class="input-group-append">
+                      <button class="btn btn-secondary btn-input btn_pesquisa" type="submit" id="button-addon2" data-toggle="tooltip" data-placement="top" title="Pesquisar">
+                        <i class="fa-solid fa-magnifying-glass ico_pesquisa"></i>
+                      </button>
+                      
+                    </div>
+                </div>
+            </form>          
+          </div>
+        </div>                                
+
+    </div>              <!-- fechamento row -->    
+
+    <div class="row bg-white"> <!-- abertura row -->    
+        <div class="col-md-1 borda text-info cabeçalho">  
+            Data
+        </div>
+
+        <div class="col-md-4 borda text-info cabeçalho">
+            Descrição
+        </div>
+
+        <div class="col-md-1 borda text-info cabeçalho" data-toggle="tooltip" data-placement="top" title="Quantidade">            
+            QTD
+        </div>
+        <div class="col-md-1 borda text-info cabeçalho" data-toggle="tooltip" data-placement="top" title="Saida/Devoluçao">
+            S/D
+        </div> 
+
+        <div class="col-md-2 borda text-info cabeçalho">
+            Funcionário
+        </div> 
+        <div class="col-md-2 borda text-info cabeçalho">
+            Agência
+        </div> 
+               
+                   
+         <div class="col-md-1 borda text-info cabeçalho" data-toggle="tooltip" data-placement="top" title="Material/Ferramenta">
+           Tipo
+        </div>
+                 
+    </div>  <!-- fechamento row -->      
+
+<div class="row auxiliar_scroll_painel_historico" id="scroll_painel_historico">
+  <div class="col-12" >    
+
+    <!-- inserçao do historico -->
+    <?php 
+      
+      $retorno = $this->view->historico;
+
+      foreach($retorno as $historico){      
+
+     ?>
+      <div class="row bg-white" id="auxiliar_scroll_painel_historico"> <!-- abertura row -->    
+          <span class="d-none" id="qtd_painel_historico">
+            <?=count($retorno)?>
+          </span>   
+        <div class="col-md-1 borda">  
+            <span id="data_historico" class="data_historico" data-toggle="tooltip" data-placement="bottom" title="<?=$historico['hora']?>" >
+              <?=$historico['data']?>
+            </span>
+        </div>
+
+        <div class="col-md-4 borda">
+          <?=$historico['descriçao']?>
+        </div>        
+        <div class="col-md-1 borda text-center">                      
+        <?php 
+        if ($historico['sd'] == 'S') {?>
+          <span class="qtd_historico"> -<?=$historico['qtd'];?> </span>
+        <?php }
+        else {
+          echo $historico['qtd'];
+        }
+      ?>
+        </div>
+        <div class="col-md-1 borda text-center sd">          
+          <b><?=$historico['sd']?></b>
+        </div> 
+
+        <div class="col-md-2 borda text-justify">
+          <?php 
+              $nomeFuncionario = explode(' ', $historico['funcionario']);
+              echo $nomeFuncionario['0'];              
+          ?>
+        </div>        
+        <div class="col-md-2 borda text-justify fonte_agencia">
+              <?= $historico['agencia']?>
+        </div>
+
+        <div class="col-md-1 borda text-center">
+          <?php
+            if ($historico['tipo'] == 'M') {?>
+              <i class="fa-solid fa-cart-flatbed mt-1"></i>
+            <?php }?>          
+            <?php
+            if ($historico['tipo'] == 'F') {?>
+              <i class="fa-solid fa-screwdriver-wrench mt-1"></i>
+            <?php }?>          
+        </div>          
+    </div>  <!-- fechamento row -->      
+      <?php } ?>
+  </div> 
+</div>
+
+</div>      <!-- fechamento container layout_2 -->  
+
+<div class="float-right fixed-bottom d-flex justify-conten-center nav_painel" >
+      <ul class="nav ul_painel d-flex justify-content-center ">
+      <li class="nav-item">
+        <div class="d-flex justify-content-center">
+          <a class="nav-link btn btn-block btn-outline-primary fa-solid fa-cart-flatbed btn_nav" id="ico_ferramentas" data-toggle="tooltip" data-placement="top" title="Estoque de material" onclick="painel_materiais()"></a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <div class="d-flex justify-content-center">
+          <a class="nav-link btn btn-block btn-outline-primary fa-solid fa-screwdriver-wrench btn_nav" id="ico_ferramentas"data-toggle="tooltip" data-placement="top" title="Estoque de ferramentas" onclick="painel_ferramentas()"></a>
+        </div>        
+      </li>
+      <li class="nav-item">
+        <div class="d-flex justify-content-center">
+          <a class="nav-link btn btn-block btn-outline-primary fa-solid fa-helmet-safety btn_nav" data-toggle="tooltip" data-placement="top" title="Funcionários" onclick="painel_funcionarios()"></a>
+        </div>           
+      </li>
+      <li class="nav-item">
+        <div class="d-flex justify-content-center">
+          <a class="nav-link btn btn-block btn-outline-primary fa-solid active fa-clock-rotate-left btn_nav" data-toggle="tooltip" data-placement="bottom" title="Histórico"></a>          
+        </div>            
+      </li>
+    </ul>
+  </div>
+  </body>
+</html>

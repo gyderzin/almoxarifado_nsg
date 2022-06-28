@@ -1,0 +1,118 @@
+<?php      
+     use MF\Model\Container;     
+     $usuarioModel = Container::getModel('usuario','users');        
+     $usuarioModel->__set('id', $_SESSION['id']);
+     $usuario = $usuarioModel->recuperarUsuario();     
+     $nomeUser = explode(' ', $usuario['0']['nome']);
+     if(isset($_SESSION['id']) && $_SESSION['id'] == '') {
+         header('Location:/?login=invalido'); 
+     }
+    ?> 
+<div class="container-fluid h-100">
+  <div class="row h-100">    
+  <div class="col cx_login">
+  <div class="row h-100 justify-content-center align-items-center">
+  <div class="d-flex justify-content-center mb-5">
+    <div class="card" style="width: 60rem;">
+      <div class="card-body bg-dark  rounded">
+        
+        <div class="row border-bottom pb-2">
+          <div class="col-3">
+          <div class="row">
+                    <div class="col-md-12 justify-content-center text-primary text-center ">
+                        <i class="fa-solid fa-user" id="icone_user"></i>
+                    </div>
+                    <div class="col-md-12 justify-content-start text-white text-painel">
+                       <?php                           
+                            echo $nomeUser['0'].' '. $nomeUser['1']. ' ('. $usuario['0']['tipo'].')';
+                       ?>
+                    </div>
+                    <div class="col-md-12 justify-content-start text-white text-painel">
+                         <?php                             
+                            echo $usuario[0]['email'];
+                       ?>
+                    </div>                   
+                </div>
+          </div>
+          <div class="col-6">
+            <div class="d-flex justify-content-center">
+              <img src="/img/logo-nsg.png" />
+            </div>
+          </div>
+          <div class="col-3">
+                <div class="row h-100">
+                    <div class="col-md-12 d-flex justify-content-center align-self-center">                  
+                   <a href="/logout" id="logout" data-toggle="tooltip" data-placement="top" title="Sair">
+                        <span class="fa-solid fa-arrow-right-from-bracket" id="ico_saida"></span>                        
+                    </a>
+                    </div>
+                </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <h2 class="text-center text-white p-3">Selecionar filial</h2>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">            
+                <table class="table table-borderless table-light rounded" id="table_seleciona_filial">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Contrato</th>
+                            <th scope="col">Filial</th>                        
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row" class="th_seleciona_filal">
+                            <form action="validarFilial" method="post">
+                            <input type="text" class="d-none" value="pvh" name="filial">
+                              <button class="btn btn-primary">
+                              <i class="fa-solid fa-right-to-bracket"></i>
+                                 Selecionar
+                              </button>                            
+                            </form>
+                            </th>
+                            <td>
+                              <span class="text_seleciona_contrato">CEF - Manutenção RO</span> 
+                            </td>
+                            <td>
+                               <span class="text_seleciona_contrato">Porto-Velho (RO)</span> 
+                            </td>   
+                          </tr>
+                          <tr>
+                            <th scope="row">
+                            <form action="validarFilial" method="post">
+                              <button class="btn btn-primary">
+                              <i class="fa-solid fa-right-to-bracket"></i>
+                                Selecionar
+                              </button>
+                                <input type="text"class="d-none" value="jipa" name="filial">
+                            </form>
+                            </th>
+                            <td>
+                              <span class="text_seleciona_contrato">CEF - Manutenção RO</span> 
+                            </td>
+                            <td>
+                               <span class="text_seleciona_contrato">Ji-Paraná (RO)</span> 
+                            </td>                           
+                          </tr>
+                                                                                
+                        </tbody>
+                </table>                         
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  </div>
+</div>
+<?php
+
+?>

@@ -1,0 +1,256 @@
+<div class="row bg-primary p-2 row_cabeçalho">  <!-- abertura row -->    
+        <div class="col-md-1">
+            <div class="d-flex justify-content-center">
+              <span data-toggle="tooltip" data-placement="top" title="Adicionar novo material">
+                  <i class="fa-solid fa-circle-plus icons_painel ico_new" data-toggle="modal" data-target="#modalAddMaterial"></i>
+              </span>  
+            </div>
+        </div>    
+        <div class="col-md-1">
+            <div class="d-flex justify-content-center">
+              <span data-toggle="tooltip" data-placement="top" title="Remover material">
+                  <i class="fa-solid fa-trash-can icons_painel ico_delete"  
+                    data-toggle="modal" data-target="#modalRemoveMaterial"></i>
+              </span>  
+            </div>
+        </div>
+      
+        <div class="col-md-6 d-flex justify-content-center ">
+            <span class="caixa-mat"style="font-size:18px; font-style:italic;">
+                <b>Gerenciamento de Material</b>
+            </span>            
+        </div>   
+
+        <div class="col-md-4 d-flex  justify-content-center">    
+          <div class="d-flex justify-content-center">
+            <form action="pesquisar" method="post">
+                <div class="input-group"> 
+                    <input type="text" name="pesquisa" id="pesquisa" class="form-control form-control-sm inputs" placeholder="Pesquisar material">
+                    <div class="input-group-append">
+                      <button class="btn btn-secondary btn-input pesquisar" type="submit" id="button-addon2" data-toggle="tooltip" data-placement="top" title="Pesquisar">
+                        <i class="fa-solid fa-magnifying-glass ico_pesquisa"></i>
+                      </button>
+                      
+                    </div>
+                </div>
+            </form>          
+          </div>
+        </div>                                
+
+    </div>              <!-- fechamento row -->    
+    <div class="caixa_painel">
+    <div class="row bg-white"> <!-- abertura row -->    
+        <div class="col-md-1 borda text-info cabeçalho">  
+            ID          
+        </div>
+
+        <div class="col-md-7 borda text-info cabeçalho">
+            Descrição
+        </div>
+
+        <div class="col-md-1 borda text-info cabeçalho">
+           QTD
+        </div>
+        <div class="col-md-1 borda text-info cabeçalho">            
+            <div class="d-flex justify-content-center">
+               Entrada
+            </div>
+        </div>
+        <div class="col-md-1 borda text-info cabeçalho">
+            <div class="d-flex justify-content-center">
+               Saída
+            </div>
+        </div>     
+        <div class="col-md-1 borda text-info cabeçalho">
+            <div class="d-flex justify-content-center">
+               Editar
+            </div>
+        </div>        
+    </div>  <!-- fechamento row -->               
+<!-- inserçao dos materiais  -->
+<div class="row auxiliar_scroll_painel" id="scroll_painel">
+    <div class="col-12" >
+<?php    
+    $materiaisDG = $this->view->materiais;            
+    foreach($materiaisDG as $materiais) {     
+        $material = $this->view->conexao;                                       
+        $mat= $material->recuperarDados($materiais['id'], 'descriçao');        
+        $nomeMaterial = $mat['0']['descriçao'];     
+        require('modal.phtml')
+?>      
+    <div class="row bg-white" id="auxiliar_scroll_painel"> <!-- abertura row -->    
+    <span class="d-none" id="qtd_mat_painel">
+        <?= count($materiaisDG)?>
+    </span>
+        <div class="col-md-1 borda text-center">
+            <span id="<?=$materiais['id']?>">
+                <?= $materiais['id'] ?>
+            </span>
+        </div>
+
+        <div class="col-md-7 borda">        
+            <span id="<?=$materiais['descriçao']?>">
+                <?= $materiais['descriçao'] ?>
+            </span>
+        </div>
+      
+        <div class="col-md-1 borda text-center">
+        <span id="qtd=<?=$materiais['quantidade']?>">        
+            <?= $materiais['quantidade'] ?>  
+        </span>
+        </div>
+        <div class="col-md-1 borda caixa_ico" data-toggle="modal" data-target="#modalMaisMaterial<?=$materiais['id']?>">            
+            <div class="d-flex justify-content-center">
+                <i class="fa-regular fa-plus ico_add"></i>
+            </div>
+        </div>
+        <div class="col-md-1 borda caixa_ico_remove" data-toggle="modal" data-target="#modalRemoverMaterial<?=$materiais['id']?>" >
+            <div class="d-flex justify-content-center">
+                <i class="fa-solid fa-minus ico_remove"></i>
+            </div>
+        </div>
+        <div class="col-md-1 borda caixa_ico_change" data-toggle="modal" data-target="#modalChangeMaterial<?=$materiais['id']?>" >
+            <div class="d-flex justify-content-center">
+                <i class="fa-solid fa-file-pen ico_change"></i>    
+            </div>
+        </div>        
+    </div>  <!-- fechamento row -->    
+    
+  
+        <?php             
+            } ?>
+
+</div>
+</div>
+        <!-- Tags de retorno visual para o usuario -->
+
+
+    <?php if(isset($_GET['enviado']) && $_GET['enviado'] == 'sucesso') {
+        ?>
+    <div class="alert alert-success alert-dismissible alert_bottom fade  show fixed-bottom" role="alert">
+        Inserido com sucesso! 
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+
+    <?php if(isset($_GET['enviado']) && $_GET['enviado'] == 'erro') {
+        ?>
+    <div class="alert alert-danger alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        Preencha as informações para inserir um material!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+    
+
+<?php if(isset($_GET['excluido']) && $_GET['excluido'] == 'sucesso') {
+    ?>
+    <div class="alert alert-success alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+       Excluido com sucesso
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<?php }?>
+
+<?php if(isset($_GET['excluido']) && $_GET['excluido'] == 'erro') {
+    ?>
+    <div class="alert alert-danger alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        Material não encontrado!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<?php }?>
+
+<?php if(isset($_GET['adicionado']) && $_GET['adicionado'] == 'sucesso') {
+        ?>
+    <div class="alert alert-success alert-dismissible alert_bottom fade  show fixed-bottom" role="alert">
+        Adicionado com sucesso!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+
+    <?php if(isset($_GET['adicionado']) && $_GET['adicionado'] == 'erro') {
+        ?>
+    <div class="alert alert-danger alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        Insira as informações  para adicionar um item.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+
+    <?php if(isset($_GET['removido']) && $_GET['removido'] == 'sucesso') {
+        ?>
+    <div class="alert alert-success alert-dismissible alert_bottom fade  show fixed-bottom" role="alert">
+        Removido com sucesso! 
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+
+    <?php if(isset($_GET['removido']) && $_GET['removido'] == 'erro') {
+        ?>
+    <div class="alert alert-danger alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        A quantidade inserida não é valida!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+
+    <?php if(isset($_GET['atualizado']) && $_GET['atualizado'] == 'sucesso') {
+        ?>
+    <div class="alert alert-success alert-dismissible alert_bottom fade  show fixed-bottom" role="alert">
+        Atualizado com sucesso!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+
+    <?php if(isset($_GET['atualizado']) && $_GET['atualizado'] == 'erro') {
+        ?>
+    <div class="alert alert-danger alert-dismissible alert_bottom fade show fixed-bottom" role="alert">
+        Insira as informações  para atualizar um item.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php }?>
+</div>    
+</div>      <!-- fechamento container layout_2 -->  
+
+<div class="float-right fixed-bottom d-flex justify-conten-center nav_painel" >
+      <ul class="nav ul_painel d-flex justify-content-center ">
+      <li class="nav-item">
+        <div class="d-flex justify-content-center">
+          <a class="nav-link btn btn-block btn-outline-primary active fa-solid fa-cart-flatbed btn_nav" id="ico_materiais" data-toggle="tooltip" data-placement="top" title="Estoque de material"></a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <div class="d-flex justify-content-center">
+          <a class="nav-link btn btn-block btn-outline-primary fa-solid fa-screwdriver-wrench btn_nav" id="ico_ferramentas"data-toggle="tooltip" data-placement="top" title="Estoque de ferramentas" onclick="painel_ferramentas()"></a>
+        </div>        
+      </li>
+      <li class="nav-item">
+        <div class="d-flex justify-content-center">
+          <a class="nav-link btn btn-block btn-outline-primary fa-solid fa-helmet-safety btn_nav" data-toggle="tooltip" data-placement="top" title="Funcionários" onclick="painel_funcionarios()"></a>
+        </div>           
+      </li>
+      <li class="nav-item">
+        <div class="d-flex justify-content-center">
+          <a class="nav-link btn btn-block btn-outline-primary fa-solid fa-clock-rotate-left btn_nav" data-toggle="tooltip" data-placement="bottom" title="Histórico" onclick="painel_historico()"></a>          
+        </div>            
+      </li>
+    </ul>
+  </div>
+  </body>
+</html>
